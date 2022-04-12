@@ -1,82 +1,42 @@
-import React, {
-  useState,
-  useEffect,
-  // useLayoutEffect,
-  // useCallback,
-  // useMemo,
-  // useRef,
-} from "react";
-
+import React from "react";
 import ReactDOM from "react-dom";
+import { ThemeProvider, createTheme } from "@mui/material";
+import { MessageList, Layout, ChatList, Header } from "./components";
 
-import "./index.css";
-
-const MessageList = () => {
-  const [value, setValue] = useState("");
-  const [messages, setMessages] = useState([
-    {
-      author: "Bot",
-      message: "message 1",
-      date: new Date().toLocaleDateString(),
-    },
-  ]);
-
-  const sendMessages = () => {
-    setMessages([...messages, { author: "User", message: value }]);
-    setValue("");
-  };
-
-  useEffect(() => {
-    const lastMessages = messages[messages.length - 1];
-    let timerId = null;
-
-    if (messages.length && lastMessages.author === "User") {
-      timerId = setTimeout(() => {
-        setMessages([
-          ...messages,
-          { author: "Bot", message: "hello from bot" },
-        ]);
-      }, 500);
-    }
-
-    return () => {
-      clearInterval(timerId);
-    };
-  }, [messages]);
-
-  return (
-    <div>
-      <h2>
-        <input
-          placeholder="Введите сообщение"
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-        />
-        <button onClick={sendMessages}>send message</button>
-        <hr />
-        {messages.map((message) => (
-          <div>
-            <h2>{message.author}</h2>
-            <p>{message.message}</p>
-            <hr />
-          </div>
-        ))}
-      </h2>
-    </div>
-  );
-};
+import "./global.css";
 
 const App = () => {
   return (
     <>
-      <MessageList />
+      <Layout
+        messages={<MessageList />}
+        chats={<ChatList />}
+        header={<Header />}
+      />
     </>
   );
 };
 
+const theme = createTheme({
+  palette: {
+    // primary: {
+    //   // main: "#ff0000",
+    // },
+  },
+  breakpoints: {
+    keys: ["lg", "sm"],
+    values: {
+      lg: 1200,
+      sm: 320,
+    },
+  },
+});
+
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <ThemeProvider theme={theme}>
+      <App />
+    </ThemeProvider>
   </React.StrictMode>,
   document.getElementById("root")
 );
